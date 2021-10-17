@@ -40,8 +40,31 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new ResourceNotFoundException("Employee", "Id", id);
         }
 
-        //Same with lamda expression
+        //Same with lambda expression
         //return employeeRepository.findById(id).orElseThrow(() ->
             // new ResourceNotFoundException("Employee", "Id", id))
+    }
+
+    @Override
+    public Employee updateEmployee(Employee employee, long id) {
+        //we need to check whether the employee with given id exist in the database
+        Employee existingEmployee = employeeRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Employee", "id", id));
+
+        existingEmployee.setFirstName((employee.getFirstName()));
+        existingEmployee.setLastName((employee.getLastName()));
+        existingEmployee.setEmail((employee.getEmail()));
+
+        //save existing employee to database
+        employeeRepository.save(existingEmployee);
+        return existingEmployee;
+    }
+
+    @Override
+    public void deleteEmployee(long id) {
+        //check whether the employee exists in the database
+        employeeRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Employee", "id", id));
+        employeeRepository.deleteById(id);
     }
 }
